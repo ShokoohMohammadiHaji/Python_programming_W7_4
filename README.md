@@ -70,3 +70,4 @@ Displaying results.
 ### Electricity consumption summary ###
 Program ending.
 ````
+# Python_programming_W7_5
