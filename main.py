@@ -1,54 +1,82 @@
 
-def readFile(PfileName):
-    Prows = []
+from typing import NamedTuple
+
+
+class TIMESTAMP(NamedTuple):
+    weekday: str
+    hour: str
+    consumption: float
+    price: float
+    total: float
+
+
+def readTimestamps(PfileName, Ptimestamps):
+
     print(f'Reading file "{PfileName}".')
+
     solidFile = open(PfileName, "r", encoding="utf-8")
 
     solidFile.readline()  # Skip header
 
     for line in solidFile:
+
         line = line.strip()
 
         if line == "":
             continue
 
-        Prows.append(line)
+        parts = line.split(";")
+
+        weekday = parts[0]
+        hour = parts[1]
+        consumption = float(parts[2])
+        price = float(parts[3])
+
+        total = consumption * price
+
+        timestamp = TIMESTAMP(
+            weekday,
+            hour,
+            consumption,
+            price,
+            total
+        )
+
+        Ptimestamps.append(timestamp)
 
     solidFile.close()
-    return Prows
+
+    return Ptimestamps
 
 
-def displayResult(Prows):
+def displayTimestamps(Ptimestamps):
+
     print("Electricity usage:")
 
-    for item in range(len(Prows)):
-        print(f" - {Prows[item][0]} {Prows[item][1]}, price {float(Prows[item][3]):.2f} €, consumption {float(Prows[item][2]):.2f} kWh, total {Prows[item][4]:.2f} €")
+    for timestamp in Ptimestamps:
 
-
-def calculateTotal(Prows):
-    for item in range(len(Prows)):
-        Prows[item] = Prows[item].split(";")
-
-        total = float(Prows[item][2]) * float(Prows[item][3])
-
-        Prows[item].append(total)
-
-    return Prows
+        print(
+            f" - {timestamp.weekday} {timestamp.hour}, "
+            f"price {timestamp.price:.2f} €, "
+            f"consumption {timestamp.consumption:.2f} kWh, "
+            f"total {timestamp.total:.2f} €"
+        )
 
 
 def main():
-    rows = []
 
     print("Program starting.")
+
     fileName = input("Insert filename: ")
 
-    rows = readFile(fileName)
+    timestamps = []
 
-    rows = calculateTotal(rows)
+    readTimestamps(fileName, timestamps)
 
-    displayResult(rows)
+    displayTimestamps(timestamps)
 
     print("Program ending.")
 
 
-main()
+if __name__ == "__main__":
+    main()
