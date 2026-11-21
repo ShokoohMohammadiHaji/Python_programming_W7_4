@@ -15,13 +15,13 @@ class DAY_USAGE(NamedTuple):
     cost: float
 
 
-def readFile(PfileName):
+def readTimestamps(PfileName):
     timestamps: list[TIMESTAMP] = []
 
     print(f'Reading file "{PfileName}".')
 
     solidFile = open(PfileName, "r", encoding="utf-8")
-    solidFile.readline()  # Skip header
+    solidFile.readline()
 
     for line in solidFile:
         line = line.strip()
@@ -45,7 +45,7 @@ def readFile(PfileName):
     return timestamps
 
 
-def calculateTotal(Ptimestamps, PweekDay):
+def displayTimestamps(Ptimestamps, PweekDay):
 
     analysis_helper: list[DAY_USAGE] = []
     results: list[str] = []
@@ -54,16 +54,13 @@ def calculateTotal(Ptimestamps, PweekDay):
 
     for day in PweekDay:
 
-        # Gatherers
         totalconsumption = 0.0
         totalcost = 0.0
 
         for timestamp in Ptimestamps:
 
             if day == timestamp.weekday:
-
                 totalconsumption += timestamp.consumption
-
                 totalcost += timestamp.consumption * timestamp.price
 
         day_usage = DAY_USAGE(
@@ -95,6 +92,15 @@ def calculateTotal(Ptimestamps, PweekDay):
     return results
 
 
+# Keep the original function names as well
+def readFile(PfileName):
+    return readTimestamps(PfileName)
+
+
+def calculateTotal(Ptimestamps, PweekDay):
+    return displayTimestamps(Ptimestamps, PweekDay)
+
+
 def main():
 
     weekDay = (
@@ -103,7 +109,7 @@ def main():
         "Wednesday",
         "Thursday",
         "Friday",
-        "Saturnday",
+        "Saturday",
         "Sunday"
     )
 
@@ -111,11 +117,12 @@ def main():
 
     fileName = input("Insert filename: ")
 
-    timestamps = readFile(fileName)
+    timestamps = readTimestamps(fileName)
 
-    calculateTotal(timestamps, weekDay)
+    displayTimestamps(timestamps, weekDay)
 
     print("Program ending.")
 
 
-main()
+if __name__ == "__main__":
+    main()
